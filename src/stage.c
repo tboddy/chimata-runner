@@ -246,12 +246,6 @@ void waveFour(){
 void waveFive(){
 	if(waveClock % 60 == 0){
 
-		// shoot
-
-		void spawnBullets(s16 i){
-
-		}
-
 		// movement
 
 		stageVectors[0].x = FIX16(waveClock % 120 == 0 ? 32 : (GAME_W / 2));
@@ -264,6 +258,9 @@ void waveFive(){
 				UPDATE_VEL(i);
 				ent[i].ints[0]++;
 			}
+
+			// shoot
+
 			if(ent[i].clock >= ent[i].ints[2] && ent[i].ints[3] < 8 && ent[i].clock % 4 == 0){
 				struct spawner spawner = {
 					.x = ent[i].pos.x,
@@ -272,18 +269,14 @@ void waveFive(){
 					.offX = 4,
 					.offY = 4,
 					.speed = ent[i].fixes[0],
+					.image = ent[i].ints[3] % 2 == 0 ? &smallGreenBullet : &smallPinkBullet,
 					.angle = ent[i].ints[4] + ent[i].ints[3] * 128
 				};
-				switch(ent[i].ints[3] % 4){
-					case 0: spawner.image = &smallGreenBullet;
-					case 1: spawner.image = &smallYellowBullet;
-					case 2: spawner.image = &smallRedBullet;
-					case 3: spawner.image = &smallBlueBullet;
-				}
 				spawn(spawner, EMPTY);
 				ent[i].ints[3]++;
 				ent[i].fixes[0] = fix16Add(ent[i].fixes[0], FIX16(0.05));
 			}
+
 		};
 
 		struct spawner spawner = {
@@ -331,7 +324,7 @@ void waveTen(){
 // wave
 
 void updateWave(){
-	waveFive();
+	waveSix();
 	waveClock--;
 	if(waveClock <= 0) waveClock = WAVE_START;
 }

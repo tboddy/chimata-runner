@@ -53,7 +53,7 @@ void loadSky(){
 
 void loadTrees(){
 	for(s16 x = 0; x < TREES_COUNT; x++){
-		VDP_drawImageEx(BG_B, &trees, TILE_ATTR_FULL(PAL1, 0, 0, 0, TREES_I), x * TREES_WIDTH, TREES_Y, 0, DMA);
+		VDP_drawImageEx(BG_B, &trees, TILE_ATTR_FULL(PAL2, 0, 0, 0, TREES_I), x * TREES_WIDTH, TREES_Y, 0, DMA);
 		VDP_drawImageEx(BG_A, &fg, TILE_ATTR_FULL(PAL1, 0, 0, 0, FG_I), x * TREES_WIDTH, FG_Y, 0, DMA);
 	}
 }
