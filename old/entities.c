@@ -9,6 +9,7 @@
 #include "bullet.h"
 #include "player.h"
 #include "explosion.h"
+#include "powerups.h"
 
 
 // spawn
@@ -47,16 +48,9 @@ void spawn(struct spawner spawner, void(*updater)){
 		ent[i].colliderV[j].x = -1;
 		ent[i].colliderV[j].y = -1;
 	}
+	ent[i].offX = spawner.offX;
+	ent[i].offY = spawner.offY;
 	switch(ent[i].type){
-		case TYPE_PLAYER: spawnPlayer(i); break;
-		case TYPE_ENEMY:
-			ent[i].offX = spawner.offX;
-			ent[i].offY = spawner.offY;
-			break;
-		case TYPE_BULLET:
-			ent[i].offX = spawner.offX;
-			ent[i].offY = spawner.offY;
-			break;
 		case TYPE_EXPLOSION:
 			ent[i].offX = 12;
 			ent[i].offY = 12;
@@ -64,7 +58,6 @@ void spawn(struct spawner spawner, void(*updater)){
 	}
 	ent[i].image = SPR_addSprite(spawner.image, fix16ToInt(ent[i].pos.x) - ent[i].offX, fix16ToInt(ent[i].pos.y) - ent[i].offY, S_ATTR);
 	if(spawner.anim) SPR_setAnim(ent[i].image, spawner.anim);
-	if(ent[i].type == TYPE_ENEMY) spawnEnemy(i);
 }
 
 
@@ -88,35 +81,6 @@ Vect2D_f16 hone(Vect2D_f16 pos, Vect2D_f16 target, fix16 speed, s16 lerp){
 
 // loop
 
-void collideEntity(s16 i){
-	// for(s16 j = 0; j < COLLIDER_INT; j++){
-	// 	ent[i].colliders[j] = FALSE;
-	// 	ent[i].colliderV[j].x = 0;
-	// 	ent[i].colliderV[j].y = 0;
-	// }
-	
-	// ent[i].nextPos.x = fix16Add(ent[i].pos.x, ent[i].vel.x);
-	// ent[i].nextPos.y = fix16Add(ent[i].pos.y, ent[i].vel.y);
-
-	// if(ent[i].nextPos.x % FIX16(1) > FIX16(0.5)) ent[i].nextPos.x = fix16Sub(ent[i].nextPos.x, FIX16(0.5));
-	// if(ent[i].nextPos.y % FIX16(1) > FIX16(0.5)) ent[i].nextPos.y = fix16Sub(ent[i].nextPos.y, FIX16(0.5));
-
-	// ent[i].col.x = fix16ToInt(fix16Div(ent[i].nextPos.y, BLOCK_SIZE));
-	// ent[i].col.y = fix16ToInt(fix16Div(ent[i].nextPos.x, BLOCK_SIZE));
-
-	// foundCol = FALSE;
-	// for(s16 j = 0; j < COLLIDER_INT; j++){
-	// 	if(!ent[i].colliders[j] && !foundCol && blockColGrid[ent[i].col.x][ent[i].col.y]){
-	// 		ent[i].colliders[j] = TRUE;
-	// 		ent[i].colliderV[j].x = ent[i].col.x;
-	// 		ent[i].colliderV[j].y = ent[i].col.y;
-	// 		foundCol = TRUE;	
-	// 	}
-	// }
-
-	// ent[i].colliding = blockColGrid[ent[i].col.x][ent[i].col.y];
-}
-
 void killEntity(s16 i){
 	ent[i].active = FALSE;
 	SPR_releaseSprite(ent[i].image);
@@ -128,6 +92,7 @@ void updateEntity(s16 i){
 		case TYPE_ENEMY: updateEnemy(i); break;
 		case TYPE_BULLET: updateBullet(i); break;
 		case TYPE_EXPLOSION: updateExplosion(i); break;
+		case TYPE_POWERUP: updatePowerup(i); break;
 	}
 	ent[i].updater(i);
 	ent[i].pos.x = fix16Add(ent[i].pos.x, ent[i].vel.x);
@@ -150,5 +115,6 @@ void updateEntities(){
 		updateEntity(i);
 		drawEntity(i);
 	}
-	// drawEntity(p);
+	for(s16 i = 0; i < ENTITY_COUNT; i++) if(ent[i].active && ent[i].type == TYPE_BULLET) collideBullet(i);
+	updateEnemies();
 }

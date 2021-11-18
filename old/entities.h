@@ -6,7 +6,7 @@
 
 struct entity {
 	bool active, colliding;
-	Vect2D_f16 pos, nextPos, nextPosCheck, vel, col;
+	Vect2D_f16 pos, nextPos, lastPos, nextPosCheck, vel, col;
 	s16 type, subType, angle, health, offX, offY, clock;
 	fix16 speed;
 	bool bools[COUNT_INT];
@@ -29,6 +29,7 @@ struct entity ent[ENTITY_COUNT];
 #define TYPE_BULLET 2
 #define TYPE_BLOCK 3
 #define TYPE_EXPLOSION 4
+#define TYPE_POWERUP 5
 
 s16 p;
 

@@ -1,51 +1,82 @@
 // player
 
 #define PLAYER_INIT_X FIX16(GAME_W / 2)
-#define PLAYER_INIT_Y FIX16(8 * 18)
+#define PLAYER_INIT_Y FIX16(8 * 20)
 
-#define PLAYER_SPEED FIX16(2)
-#define PLAYER_SPEED_LEFT FIX16(1.5)
+#define PLAYER_Y_LIMIT FIX16(GAME_H - 48)
 
-Vect2D_f16 playerPos, playerVel, playerOff;
-Sprite* playerSprite;
+#define PLAYER_SPEED FIX16(2.5)
+
+#define PLAYER_LIMIT_X FIX16(5)
+#define PLAYER_LIMIT_W fix16Sub(FIX16(GAME_W), FIX16(3))
+#define PLAYER_LIMIT_Y FIX16(4)
+#define PLAYER_LIMIT_Z fix16Sub(FIX16(GAME_H), FIX16(4))
+
+
+#define INVINCIBLE_LIMIT 170
+
+#define SHOT_ANGLE_MOD 64
+#define SHOT_ANGLE_UP 768
+#define SHOT_ANGLE_DOWN 256
+#define SHOT_ANGLE_LEFT 512
+#define SHOT_ANGLE_RIGHT 0
+
+
+// directions
+
+#define PLAYER_VEL_BL_X fix16Mul(cosFix16(384), PLAYER_SPEED)
+#define PLAYER_VEL_BL_Y fix16Mul(sinFix16(384), PLAYER_SPEED)
+
+#define PLAYER_VEL_BR_X fix16Mul(cosFix16(128), PLAYER_SPEED)
+#define PLAYER_VEL_BR_Y fix16Mul(sinFix16(128), PLAYER_SPEED)
+
+#define PLAYER_VEL_TL_X fix16Mul(cosFix16(640), PLAYER_SPEED)
+#define PLAYER_VEL_TL_Y fix16Mul(sinFix16(640), PLAYER_SPEED)
+
+#define PLAYER_VEL_TR_X fix16Mul(cosFix16(896), PLAYER_SPEED)
+#define PLAYER_VEL_TR_Y fix16Mul(sinFix16(896), PLAYER_SPEED)
+
+
+// struct
+
+struct player {
+	Vect2D_f16 pos, vel, off;
+	s16 angle, moveClock, shotClock, clock, invincibleClock, health,
+		lives, bombs;
+	fix16 moveSpeed, shotSpeed;
+	fix32 dist;
+	bool invincible;
+	Sprite* image;
+};
+struct player player;
 
 
 // spawn
 
-void spawnPlayer(s16);
+void spawnPlayer();
+
+
+// shoot
+
+#define PLAYER_BULLET_COUNT 16
+s16 playerBulletIndexes[PLAYER_BULLET_COUNT];
+
+void spawnPlayerBullet(),
+	updatePlayerBullet(s16);
 
 
 // update
 
-#define C_OFF FIX16(8)
-#define C_OFF_Y FIX16(0)
-#define C_OFF_2 FIX16(6)
-#define C_OFF_3 FIX16(5)
-#define C_MOD FIX16(8)
-
-#define FALL_MAX FIX16(1.25)
-#define JUMP_SPEED FIX16(-5.5)
-
-#define GRAVITY FIX16(0.2)
-#define GRAVITY_MIN FIX16(0.05)
-#define GRAVITY_MAX FIX16(3.5)
-
 #define SHOT_INTERVAL 10
 
-Vect4D_f16 dist, bPos, pPos;
+s16 colDebug1, colDebug2, colDebug3;
 
-s16 pClock, moveClock, jumpClock, shotClock, shotAngle;
-fix16 fallSpeed;
-
-bool falling, jumping;
-
-void jumpPlayer(),
-	movePlayer(),
-	updatePlayerCollision(),
+void movePlayer(),
+	collidePlayer(),
 	updatePlayerShot();
 
 
 // loop
 
-void updatePlayer(s16),
+void updatePlayer(),
 	loadPlayer();
