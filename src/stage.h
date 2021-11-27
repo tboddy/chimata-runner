@@ -6,27 +6,21 @@ Vect2D_f16 stageVectors[STAGE_COUNT_INT];
 
 void (*currentWave)();
 
-void waveOne(),
-	waveTwo(),
-	waveThree(),
-	waveFour(),
-	waveFive(),
-	waveSix(),
-	waveSeven(),
-	waveEight(),
-	waveNine(),
-	waveTen();
-
-
 // wave
 
 #define WAVE_LIMIT 15
 #define WAVE_MAX 60 * WAVE_LIMIT
 
+#define OVERLAY_I 128
 
-s16 waveClock, stageClock, bossHealth, bossMax;
-bool bossActive;
-void updateWave();
+#define FAST_BULLET_MOD FIX16(0.5)
+
+s16 waveClock, stageClock, bossHealth, bossMax, currentWaveNum, transitionClock,
+	transitionX, transitionY;
+bool bossActive, fastBullets, suicideBullets;
+void updateWave(),
+	checkWave(),
+	transitionWave();
 
 
 // loop

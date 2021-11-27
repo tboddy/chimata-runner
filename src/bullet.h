@@ -9,6 +9,9 @@
 
 #define B_COUNT_INT 8
 
+#define KICKBACK FIX16(4)
+#define KICKBACK_NORMALIZE fix16Mul(KICKBACK, FIX16(0.707))
+
 struct bulletSpawner {
 	fix16 x, y, speed;
 	Vect2D_f16 vel, hPos;
@@ -37,7 +40,7 @@ struct bullet bullets[BULLET_COUNT];
 
 bool bulletCollided;
 
-fix32 bulletDist, bulletCheck;
+fix32 bulletDist;
 s16 bulletCount;
 
 void spawnBullet(struct bulletSpawner, void(*updater)),

@@ -1,25 +1,19 @@
 // player
 
 #define PLAYER_INIT_X FIX16(GAME_W / 2)
-#define PLAYER_INIT_Y FIX16(8 * 20)
+#define PLAYER_INIT_Y FIX16(GAME_H / 2)
 
 #define PLAYER_Y_LIMIT FIX16(GAME_H - 48)
 
-#define PLAYER_SPEED FIX16(2.5)
+#define PLAYER_SPEED FIX16(1.75)
 
-#define PLAYER_LIMIT_X FIX16(5)
-#define PLAYER_LIMIT_W fix16Sub(FIX16(GAME_W), FIX16(3))
-#define PLAYER_LIMIT_Y FIX16(4)
-#define PLAYER_LIMIT_Z fix16Sub(FIX16(GAME_H), FIX16(4))
+#define PLAYER_LIMIT_X FIX16(7)
+#define PLAYER_LIMIT_W fix16Sub(FIX16(GAME_W), FIX16(6))
+#define PLAYER_LIMIT_Y FIX16(8)
+#define PLAYER_LIMIT_Z fix16Sub(FIX16(GAME_H), FIX16(8))
 
 
-#define INVINCIBLE_LIMIT 170
-
-#define SHOT_ANGLE_MOD 64
-#define SHOT_ANGLE_UP 768
-#define SHOT_ANGLE_DOWN 256
-#define SHOT_ANGLE_LEFT 512
-#define SHOT_ANGLE_RIGHT 0
+#define INVINCIBLE_LIMIT 150
 
 
 // directions
@@ -36,15 +30,17 @@
 #define PLAYER_VEL_TR_X fix16Mul(cosFix16(896), PLAYER_SPEED)
 #define PLAYER_VEL_TR_Y fix16Mul(sinFix16(896), PLAYER_SPEED)
 
+#define PLAYER_START_TIME 45
+
 
 // struct
 
 struct player {
 	Vect2D_f16 pos, vel, off;
-	s16 angle, moveClock, shotClock, clock, invincibleClock, health,
+	s16 angle, moveClock, shotClock, clock, invincibleClock, shotAngle,
 		lives, bombs;
 	fix16 moveSpeed, shotSpeed;
-	fix32 dist;
+	fix32 dist, wallDist, wallDist2;
 	bool invincible;
 	Sprite* image;
 };

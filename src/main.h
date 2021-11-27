@@ -5,7 +5,9 @@ void EMPTY(s16);
 #define WIN_W 256
 #define WIN_H 224
 
-#define GAME_W 176
+// #define GAME_W 176
+// #define GAME_H 224
+#define GAME_W 256
 #define GAME_H 224
 
 #define GAME_X 0
@@ -13,9 +15,25 @@ void EMPTY(s16);
 
 #define CLOCK_LIMIT 7200
 
-s16 clock;
-s32 currentScore, highScore;
+#define SFX_MENU_SELECT 64
+#define SFX_MENU_CHOOSE 65
+#define SFX_START_GAME 66
+#define SFX_PLAYER_SHOT 67
+#define SFX_ZONE_OVER 68
 
+#define SFX_BULLET_1 69
+
+#define SFX_EXPLOSION_1 73
+#define SFX_EXPLOSION_2 74
+#define SFX_EXPLOSION_3 75
+
+#define SFX_GAME_OVER 76
+#define SFX_BEAT_GAME 77
+
+s16 clock;
+u32 currentScore, highScore;
+
+bool started, paused;
 
 // game loop
 

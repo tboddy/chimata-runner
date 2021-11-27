@@ -24,8 +24,8 @@ const struct
 } rom_header = {
     "SEGA MEGA DRIVE ",
     "TBODDY          ",
-    "it's chimata                                    ",
-    "it's chimata                                    ",
+    "drinking game                                   ",
+    "drinking game                                   ",
     "GM 00000000-00",
     0x0000,
     "JD              ",
@@ -38,6 +38,6 @@ const struct
     0x00200000,
     0x002001FF,
     "            ",
-    "it's chimata                            ",
+    "drinking game                           ",
     "JUE             "
 };

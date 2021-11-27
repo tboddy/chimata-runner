@@ -6,7 +6,9 @@
 #include "main.h"
 #include "controls.h"
 #include "bullet.h"
+#include "enemies.h"
 #include "player.h"
+#include "stage.h"
 
 
 // spawn
@@ -14,15 +16,17 @@
 void spawnPlayer(){
 	player.pos.x = PLAYER_INIT_X;
 	player.pos.y = PLAYER_INIT_Y;
-	player.off.x = FIX16(12);
-	player.off.y = FIX16(16);
+	player.off.x = FIX16(8);
+	player.off.y = FIX16(8);
 	player.dist = FIX32(1);
-	player.health = 100;
+	player.wallDist = FIX32(6);
+	player.wallDist2 = FIX32(8);
 	player.image = SPR_addSprite(
-		&playersprite,
+		&suika,
 		fix16ToInt(fix16Sub(player.pos.x, player.off.x)) + GAME_X,
 		fix16ToInt(fix16Sub(player.pos.y, player.off.y)) + GAME_Y,
 		TILE_ATTR(PAL1, 0, 0, 0));
+	SPR_setVisibility(player.image, HIDDEN);
 }
 
 
@@ -36,7 +40,7 @@ void collidePlayer(){
 }
 
 void movePlayer(){
-	if(ctrl.left || ctrl.right || ctrl.up || ctrl.down){
+	if((ctrl.left || ctrl.right || ctrl.up || ctrl.down) && enemyCount > 0 && waveClock >= PLAYER_START_TIME){
 		if(ctrl.left || ctrl.right){
 			if(ctrl.up){
 				player.angle = ctrl.left ? 640 : 896;
@@ -53,17 +57,28 @@ void movePlayer(){
 		player.pos.x = fix16Add(player.pos.x, fix16Mul(cosFix16(player.angle), PLAYER_SPEED));
 		player.pos.y = fix16Add(player.pos.y, fix16Mul(sinFix16(player.angle), PLAYER_SPEED));
 		collidePlayer();
+		if(player.angle != player.shotAngle && !ctrl.b){
+			player.shotAngle = player.angle;
+			switch(player.angle){
+				case 0: SPR_setAnim(player.image, 3); break;
+				case 256: SPR_setAnim(player.image, 0); break;
+				case 768: SPR_setAnim(player.image, 1); break;
+				case 512: SPR_setAnim(player.image, 2); break;
+			}
+		}
 	}
 	player.moveClock++;
 	if(player.moveClock >= CLOCK_LIMIT) player.moveClock = 0;
 }
 
 void updateInvincible(){
-	// if(player.invincibleClock % 20 == 0) {
-	// 	SPR_setVisibility(player.image, TRUE);
-	// } else if(player.invincibleClock % 20 == 10){
-	// 	SPR_setVisibility(player.image, FALSE);
-	// }
+	if(waveClock >= 0){
+		if(player.invincibleClock % 20 == 0) {
+			SPR_setVisibility(player.image, HIDDEN);
+		} else if(player.invincibleClock % 20 == 10){
+			SPR_setVisibility(player.image, VISIBLE);
+		}
+	}
 	player.invincibleClock--;
 	if(player.invincibleClock <= 0){
 		player.invincible = FALSE;
@@ -79,7 +94,7 @@ void spawnPlayerBullet(){
 		.y = player.pos.y,
 		.image = &smallWhiteBullet,
 		.speed = FIX16(16),
-		.angle = 768,
+		.angle = player.shotAngle,
 		.player = TRUE
 	};
 	spawnBullet(spawner, EMPTY);
@@ -87,7 +102,7 @@ void spawnPlayerBullet(){
 
 void updatePlayerShot(){
 	if(player.shotClock >= SHOT_INTERVAL && ctrl.a) player.shotClock = 0;
-	if(player.shotClock == 0) spawnPlayerBullet();
+	if(player.shotClock == 0 && enemyCount > 0 && waveClock >= PLAYER_START_TIME) spawnPlayerBullet();
 	player.shotClock++;
 	if(player.shotClock >= CLOCK_LIMIT) player.shotClock = SHOT_INTERVAL;
 }

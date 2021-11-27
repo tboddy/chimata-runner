@@ -17,8 +17,10 @@
 // game loop
 
 void loadGame(){
+	started = TRUE;
 	loadBackground();
 	loadPlayer();
+	loadEnemies();
 	loadChrome();
 	loadStage();
 }
@@ -48,6 +50,17 @@ void loadResources(){
 	VDP_loadTileSet(half.tileset, HALF_TILE, DMA);
 	VDP_loadTileSet(most.tileset, MOST_TILE, DMA);
 	VDP_loadTileSet(full.tileset, FULL_TILE, DMA);
+	XGM_setPCM(SFX_MENU_SELECT, sfxMenuSelect, sizeof(sfxMenuSelect)); // shit
+	XGM_setPCM(SFX_MENU_CHOOSE, sfxMenuChoose, sizeof(sfxMenuChoose));
+	XGM_setPCM(SFX_START_GAME, sfxStartGame, sizeof(sfxStartGame));
+	XGM_setPCM(SFX_PLAYER_SHOT, sfxPlayerShot, sizeof(sfxPlayerShot));
+	XGM_setPCM(SFX_ZONE_OVER, sfxZoneOver, sizeof(sfxZoneOver));
+	XGM_setPCM(SFX_BULLET_1, sfxBullet1, sizeof(sfxBullet1));
+	XGM_setPCM(SFX_EXPLOSION_1, sfxExplosion1, sizeof(sfxExplosion1));
+	XGM_setPCM(SFX_EXPLOSION_2, sfxExplosion2, sizeof(sfxExplosion2));
+	XGM_setPCM(SFX_EXPLOSION_3, sfxExplosion3, sizeof(sfxExplosion3));
+	XGM_setPCM(SFX_GAME_OVER, sfxGameOver, sizeof(sfxGameOver));
+	XGM_setPCM(SFX_BEAT_GAME, sfxBeatGame, sizeof(sfxBeatGame));
 }
 
 
@@ -74,14 +87,14 @@ Vect2D_f16 hone(Vect2D_f16 pos, Vect2D_f16 target, fix16 speed, s16 lerp){
 // main loop
 
 int main(){
-	VDP_setScreenWidth256();
 	JOY_init();
 	JOY_setEventHandler(&updateControls);
 	loadResources();
 	SPR_init(0, 0, 0);
-	loadGame();
+	// loadGame();
+	loadStart();
 	while(1){
-		updateGame();
+		started ? updateGame() : updateStart();
 		SPR_update();
 		SYS_doVBlankProcess();
 	}
